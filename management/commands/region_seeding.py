@@ -58,10 +58,10 @@ class Command(BaseCommand):
             self.seeding('desa')
             return
         else:
-            self.seeding('provinsi')
-            self.seeding('kabupaten')
-            self.seeding('kecamatan')
-            self.seeding('desa')
+            self.seeding('provinces')
+            self.seeding('regencies')
+            self.seeding('districts')
+            self.seeding('villages')
             return
 
     def seeding(self, region):
@@ -78,20 +78,20 @@ class Command(BaseCommand):
 
     def query(self, row, region):
         message = "Data {0} kosong, kamu harus menambahkan data {0} terlebih dahulu"
-        if region == 'provinsi':
+        if region == 'provinces':
             Provinsi.objects.update_or_create(id=row[0], defaults={"nama": row[1]})
-        elif region == 'kabupaten':
+        elif region == 'regencies':
             try:
                 Kabupaten.objects.update_or_create(id=row[0], provinsi_id=row[1], defaults={"nama": row[2]})
             except IntegrityError:
                 raise CommandError(message.format('provinsi'))
-        elif region == 'kecamatan':
+        elif region == 'districts':
             try:
                 Kecamatan.objects.update_or_create(id=row[0], kabupaten_id=row[1], defaults={"nama": row[2]})
             except IntegrityError:
                 raise CommandError(message.format('kabupaten'))
-        elif region == 'desa':
+        elif region == 'villages':
             try:
                 Desa.objects.update_or_create(id=row[0], kecamatan_id=row[1], defaults={"nama": row[2]})
             except IntegrityError:
-                raise CommandError(message.format('kecamatan'))
+                raise CommandError(message.format('desa'))
