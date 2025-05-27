@@ -46,16 +46,16 @@ class Command(BaseCommand):
             return
 
         if options['provinsi']:
-            self.seeding('provinsi')
+            self.seeding('provinces')
             return
         elif options['kabupaten']:
-            self.seeding('kabupaten')
+            self.seeding('regencies')
             return
         elif options['kecamatan']:
-            self.seeding('kecamatan')
+            self.seeding('districts')
             return
         elif options['desa']:
-            self.seeding('desa')
+            self.seeding('devillagessa')
             return
         else:
             self.seeding('provinces')
