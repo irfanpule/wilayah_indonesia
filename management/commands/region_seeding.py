@@ -55,7 +55,7 @@ class Command(BaseCommand):
             self.seeding('districts')
             return
         elif options['desa']:
-            self.seeding('devillagessa')
+            self.seeding('villages')
             return
         else:
             self.seeding('provinces')
