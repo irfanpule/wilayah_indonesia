@@ -1,11 +1,15 @@
 # Wilayah Indonesia
 
-Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupaten/kota, kecamatan, dan desa) yang dapat digunakan untuk kebutuhan aplikasi backend.
+Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupaten/kota, kecamatan, dan desa) yang dapat digunakan untuk kebutuhan input pada Admin site, form custom, REST API.
+
+![admin-site](https://raw.githubusercontent.com/irfanpule/wilayah_indonesia/refs/heads/master/screenshoots/select-chained-admin-site.png)
 
 ## Fitur
 
 - Menyediakan data wilayah Indonesia secara lengkap
 - Mendukung proses seeding ke database
+- Tersedia form chained untuk diimplementasikan pada form Admin site atau form custome
+- Tersedia endpoint REST API
 
 ## Instalasi
 
@@ -15,7 +19,6 @@ Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupat
     ```bash
     git clone https://github.com/irfanpule/data-wilayah-indonesia.
     ```
-    
 
 2. **Install dependencies**
     ```bash
@@ -25,6 +28,11 @@ Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupat
 3. **Migrate**
     ```bash
     ./manage.py migrate
+    ```
+
+4. **Register URL**
+    ```python
+    path('wilayah-indonesia/', include('wilayah_indonesia.urls')),
     ```
 
 ## Seeding Data Wilayah
@@ -63,9 +71,9 @@ path('select2/', include('django_select2.urls'))
 - Gunakan fungsi chiined yang sudah disediakan untuk membuat select chained pada form. Contoh
 ```python
 
-# Model 
+# Model -------
 # Implementasi field wilayah_indonesia pada model
-class Pekebun(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nik = models.CharField(max_length=16, unique=True)
     # field lainnya....
@@ -78,8 +86,7 @@ class Pekebun(models.Model):
     def __str__(self):
         return self.nik
     
-
-# Form
+# Form -------
 # Implementasi fungsi chained pada form
 from wilayah_indonesia.forms import provinsiChained, kabupatenChained, kecamatanChained, desaChained
 
@@ -93,15 +100,33 @@ class ProfileAdminForm(forms.ModelForm):
         model = Profile
         fields = '__all__'
 
-# Admin site
+# Admin site -------
 # Implementasi form pada admin site
 @admin.register(Profile)
-class PekebunAdmin(admin.ModelAdmin):
-    list_display = ('user', 'nik', 'no_ponsel', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'pendidikan_terakhir')
-    search_fields = ('user__username', 'nik', 'no_ponsel')
-    list_filter = ('jenis_kelamin', 'pendidikan_terakhir')
-    form = PekebunAdminForm  # tambahkan form disini
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'nik', 'no_ponsel', 'jenis_kelamin')
+    # atribute lainnya ....
+    form = ProfileAdminForm  # tambahkan form disini
 ```
+## Endpoint REST API
+- Untuk mendapatkan data provinsi 
+```
+{{base_url}}/wilayah-indonesia/provinsi/
+```
+- Untuk mendapatkan data kabupaten harus menambahkan id provinsi pada url
+```
+{{base_url}}/wilayah-indonesia/kabupaten/18/
+```
+- Untuk mendapatkan data kecamatan harus menambahkan id kabupaten pada url
+```
+{{base_url}}/wilayah-indonesia/kecamatan/1809/
+```
+- Untuk mendapatkan data desa harus menambahkan id kecamatan pada url
+```
+{{base_url}}/wilayah-indonesia/desa/1809050/
+```
+- Untuk melakukan filter atau search data cukup menambahkan query param pada url `{{uri}}/?search=way`. Berlaku untuk semua endpoint
+
 
 ## Lisensi
 
