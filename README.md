@@ -56,6 +56,52 @@ Untuk menghapus data gunakan command ini
 
 ## Form
 Sudah tersedia konfigurasi bawaan sederhana untuk form select2 dapat dilihat pada `wilayah_indonesia/forms.py`
+- Daftarkan path django-select2 pada url root project kamu
+```
+path('select2/', include('django_select2.urls'))
+```
+- Gunakan fungsi chiined yang sudah disediakan untuk membuat select chained pada form. Contoh
+```python
+
+# Model 
+# Implementasi field wilayah_indonesia pada model
+class Pekebun(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nik = models.CharField(max_length=16, unique=True)
+    # field lainnya....
+    provinsi = models.ForeignKey("wilayah_indonesia.Provinsi", on_delete=models.SET_NULL, null=True, blank=True)
+    kabupaten = models.ForeignKey("wilayah_indonesia.Kabupaten", on_delete=models.SET_NULL, null=True, blank=True)
+    kecamatan = models.ForeignKey("wilayah_indonesia.Kecamatan", on_delete=models.SET_NULL, null=True, blank=True)
+    desa = models.ForeignKey("wilayah_indonesia.Desa", on_delete=models.SET_NULL, null=True, blank=True)
+    # field lainnya ....
+
+    def __str__(self):
+        return self.nik
+    
+
+# Form
+# Implementasi fungsi chained pada form
+from wilayah_indonesia.forms import provinsiChained, kabupatenChained, kecamatanChained, desaChained
+
+class ProfileAdminForm(forms.ModelForm):
+    provinsi = provinsiChained()    
+    kabupaten = kabupatenChained()
+    kecamatan = kecamatanChained()
+    desa = desaChained()
+    
+    class Meta:
+        model = Profile
+        fields = '__all__'
+
+# Admin site
+# Implementasi form pada admin site
+@admin.register(Profile)
+class PekebunAdmin(admin.ModelAdmin):
+    list_display = ('user', 'nik', 'no_ponsel', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'pendidikan_terakhir')
+    search_fields = ('user__username', 'nik', 'no_ponsel')
+    list_filter = ('jenis_kelamin', 'pendidikan_terakhir')
+    form = PekebunAdminForm  # tambahkan form disini
+```
 
 ## Lisensi
 
