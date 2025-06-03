@@ -31,8 +31,10 @@ Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupat
     ```
 
 4. **Register URL**
+    Registrasikan url django-select2 dan wilayah_indonesia
     ```python
     path('wilayah-indonesia/', include('wilayah_indonesia.urls')),
+    path('select2/', include('django_select2.urls'))
     ```
 
 ## Seeding Data Wilayah
@@ -62,18 +64,12 @@ Untuk menghapus data gunakan command ini
 ./manage.py region_seeding --delete
 ```
 
-## Form
-Sudah tersedia konfigurasi bawaan sederhana untuk form select2 dapat dilihat pada `wilayah_indonesia/forms.py`
-- Daftarkan path django-select2 pada url root project kamu
-```
-path('select2/', include('django_select2.urls'))
-```
-- Gunakan fungsi chiined yang sudah disediakan untuk membuat select chained pada form. Contoh
+## Model
+Contoh kode:
 ```python
+from wilayah_indonesia.models import WilayahDisplayMixin
 
-# Model -------
-# Implementasi field wilayah_indonesia pada model
-class Profile(models.Model):
+class Profile(WilayahDisplayMixin, models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nik = models.CharField(max_length=16, unique=True)
     # field lainnya....
@@ -85,20 +81,25 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.nik
-    
+```
+Disediakan class mixin untuk mempermudah akses nama dari masing-masing wilayah. Cukup gunakan `WilayahDisplayMixin` kamu dapat dengan mudah akses nama wilayah seperti ini: `get_provinsi_display()`, `get_kabupaten_display()`, `get_kecamatan_display`, `get_desa_display()`.
+
+*NB: Disarakan nama field tetap menggunakan `provinsi, kabupaten, kecamatan, desa` agar fungsi mixin bekerja*
+
+
+## Form
+Sudah tersedia tersedia class mixin untuk form select2 chained dapat dilihat pada `wilayah_indonesia/forms.py`
+- Gunakan fungsi chiined yang sudah disediakan untuk membuat select chained pada form. Contoh
+```python    
 # Form -------
 # Implementasi fungsi chained pada form
-from wilayah_indonesia.forms import provinsiChained, kabupatenChained, kecamatanChained, desaChained
+from wilayah_indonesia.forms import WilayahChainedFormMixin
 
-class ProfileAdminForm(forms.ModelForm):
-    provinsi = provinsiChained()    
-    kabupaten = kabupatenChained()
-    kecamatan = kecamatanChained()
-    desa = desaChained()
-    
+class ProfileAdminForm(WilayahChainedFormMixin, forms.ModelForm):
     class Meta:
         model = Profile
         fields = '__all__'
+
 
 # Admin site -------
 # Implementasi form pada admin site
@@ -108,7 +109,8 @@ class ProfileAdmin(admin.ModelAdmin):
     # atribute lainnya ....
     form = ProfileAdminForm  # tambahkan form disini
 ```
-## Endpoint REST API
+
+## Endpoint
 - Untuk mendapatkan data provinsi 
 ```
 {{base_url}}/wilayah-indonesia/provinsi/

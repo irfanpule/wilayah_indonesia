@@ -30,3 +30,17 @@ class Desa(models.Model):
 
     def __str__(self):
         return self.nama
+
+
+class WilayahDisplayMixin:
+    def get_provinsi_display(self):
+        return self.provinsi.nama if getattr(self, "provinsi", None) else ""
+
+    def get_kabupaten_display(self):
+        return self.kabupaten.nama if getattr(self, "kabupaten", None) else ""
+
+    def get_kecamatan_display(self):
+        return self.kecamatan.nama if getattr(self, "kecamatan", None) else ""
+
+    def get_desa_display(self):
+        return self.desa.nama if getattr(self, "desa", None) else ""

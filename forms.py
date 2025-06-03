@@ -45,3 +45,13 @@ def desaChained():
             dependent_fields={'kecamatan': 'kecamatan'},
         )
     )
+
+
+class WilayahChainedFormMixin(forms.ModelForm):
+    provinsi = provinsiChained()
+    kabupaten = kabupatenChained()
+    kecamatan = kecamatanChained()
+    desa = desaChained()
+
+    class Meta:
+        abstract = True
