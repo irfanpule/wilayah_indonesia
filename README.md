@@ -2,7 +2,7 @@
 
 Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupaten/kota, kecamatan, dan desa) yang dapat digunakan untuk kebutuhan input pada Admin site, form custom, REST API.
 
-![admin-site](https://raw.githubusercontent.com/irfanpule/wilayah_indonesia/refs/heads/master/screenshoots/select-chained-admin-site.png)
+![admin-site](https://raw.githubusercontent.com/irfanpule/wilayah_indonesia/refs/heads/master/screenshoots/animation-chaining.gif)
 
 ## Fitur
 
