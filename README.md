@@ -12,7 +12,12 @@ Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupat
 - Tersedia endpoint REST API
 
 ## Instalasi
+Via PIP
+```
+pip install django-wilayah-indonesia
+```
 
+Manual
 1. **Clone repository**
     - Unduh zip dan extrak dalam direktori proyek
     - Atau masuk dalam direktori proyek kamu lalu clone repositori ini
@@ -25,12 +30,23 @@ Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupat
     pip install django-select2
     ```
 
-3. **Migrate**
+Setelah berhasil lakukan
+1. **Registrasi App**
+    ```
+    INSTALLED_APPS = [
+        ....
+        
+        'wilayah_indonesia'
+
+        ....
+    ]
+    ```
+2. **Migrate**
     ```bash
     ./manage.py migrate
     ```
 
-4. **Register URL**
+3. **Register URL**
     Registrasikan url django-select2 dan wilayah_indonesia
     ```python
     path('wilayah-indonesia/', include('wilayah_indonesia.urls')),

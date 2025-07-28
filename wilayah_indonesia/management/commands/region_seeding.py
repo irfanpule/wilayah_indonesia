@@ -5,8 +5,8 @@ import sys
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 
-from wilayah_indonesia.wilayah_indonesia import apps
-from wilayah_indonesia.wilayah_indonesia.models import Provinsi, Kabupaten, Kecamatan, Desa
+from wilayah_indonesia import apps
+from wilayah_indonesia.models import Provinsi, Kabupaten, Kecamatan, Desa
 
 
 def progress(count, total, suffix=''):

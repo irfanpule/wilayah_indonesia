@@ -68,4 +68,6 @@ ghostdriver.log
 
 ## envirotment
 env/
+.env/
 venv/
+.venv/
