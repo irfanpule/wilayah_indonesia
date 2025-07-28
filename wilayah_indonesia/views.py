@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from wilayah_indonesia.models import Provinsi, Kabupaten, Kecamatan, Desa
+from wilayah_indonesia.wilayah_indonesia.models import Provinsi, Kabupaten, Kecamatan, Desa
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic.detail import DetailView
