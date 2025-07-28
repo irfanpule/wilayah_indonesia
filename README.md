@@ -8,7 +8,7 @@ Aplikasi ini menyediakan data wilayah administratif Indonesia (provinsi, kabupat
 
 - Menyediakan data wilayah Indonesia secara lengkap
 - Mendukung proses seeding ke database
-- Tersedia form chained untuk diimplementasikan pada form Admin site atau form custome
+- Tersedia form chained untuk diimplementasikan pada form Admin site atau form custom
 - Tersedia endpoint REST API
 
 ## Instalasi
