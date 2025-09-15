@@ -35,6 +35,11 @@ if sys.argv[-1] == 'publish':
     print("  git tag -a %s -m 'version %s'" % (version, version))
     print("  git push --tags")
     sys.exit()
+
+if sys.argv[-1] == 'build_pre_publish':
+    build_package()
+    print("The version now: ", version)
+    sys.exit()
  
 setup(
     name='django-wilayah-indonesia',
