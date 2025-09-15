@@ -1,2 +1,4 @@
 include LICENSE
 include README.md
+recursive-include wilayah_indonesia/wilayah_indonesia/csv *.csv
+recursive-include wilayah_indonesia *
