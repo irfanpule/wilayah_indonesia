@@ -1,6 +1,7 @@
 import os
 import csv
 import sys
+import importlib.resources as resources
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
@@ -24,8 +25,6 @@ def progress(count, total, suffix=''):
 
 class Command(BaseCommand):
     help = 'Menambahkan semua data wilayah yang ada di Indonesia'
-
-    CSV_DIR = os.path.join(apps.WilayahIndonesiaConfig.name, 'csv')
 
     def add_arguments(self, parser):
         parser.add_argument('--provinsi', action='store_true', help='hanya menambahkan data provinsi')
@@ -65,16 +64,16 @@ class Command(BaseCommand):
             return
 
     def seeding(self, region):
-        file = open(self.CSV_DIR + f'/{region.lower()}.csv', 'r')
-        reader = csv.reader(file, delimiter=",")
-        row_count = len(list(reader))
-        counter = 0
-        file.seek(0)
-        for row in reader:
-            progress(counter, row_count, suffix=region.title())
-            counter = counter + 1
-            self.query(row, region)
-        self.stdout.write(self.style.SUCCESS(f"Sukses menambahkan {counter} data"))
+        with resources.open_text("wilayah_indonesia.csv", f"{region.lower()}.csv") as csv_file:
+            reader = csv.reader(csv_file, delimiter=",")
+            row_count = len(list(reader))
+            counter = 0
+            csv_file.seek(0)
+            for row in reader:
+                progress(counter, row_count, suffix=region.title())
+                counter = counter + 1
+                self.query(row, region)
+            self.stdout.write(self.style.SUCCESS(f"Sukses menambahkan {counter} data"))
 
     def query(self, row, region):
         message = "Data {0} kosong, kamu harus menambahkan data {0} terlebih dahulu"
