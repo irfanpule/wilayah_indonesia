@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Provinsi, Kabupaten, Kecamatan, Desa
+from .models import Provinsi, Kabupaten, Kecamatan, Desa, WilayahIDMapping
 
 
 class ProvinsiAdmin(admin.ModelAdmin):
@@ -37,6 +37,13 @@ class DesaAdmin(admin.ModelAdmin):
     nama_kecamatan.admin_order_field = 'kecamatan__nama'
 
 
+class WilayahIDMappingAdmin(admin.ModelAdmin):
+    search_fields = ('id_lama', 'id_baru')
+    list_display = ('id', 'id_lama', 'id_baru', 'tipe')
+    list_filter = ('tipe',)
+
+
+admin.site.register(WilayahIDMapping, WilayahIDMappingAdmin)
 admin.site.register(Provinsi, ProvinsiAdmin)
 admin.site.register(Kabupaten, KabupatenAdmin)
 admin.site.register(Kecamatan, KecamatanAdmin)

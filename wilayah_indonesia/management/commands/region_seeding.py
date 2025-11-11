@@ -35,13 +35,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['delete']:
-            Provinsi.objects.all().delete()
-            progress(1, 3, suffix="Hapus data")
-            Kabupaten.objects.all().delete()
-            progress(2, 3, suffix="Hapus data")
-            Kecamatan.objects.all().delete()
-            progress(3, 3, suffix="Hapus data")
-            self.stdout.write(self.style.SUCCESS("Sukses hapus semua data wilayah"))
+            self.delete_all_data_batch()
             return
 
         if options['provinsi']:
@@ -94,3 +88,54 @@ class Command(BaseCommand):
                 Desa.objects.update_or_create(id=row[0], kecamatan_id=row[1], defaults={"nama": row[2]})
             except IntegrityError:
                 raise CommandError(message.format('desa'))
+
+    def delete_all_data_batch(self, batch_size=500):
+        """
+        Menghapus semua data wilayah secara batch untuk menghindari SQLite variable limit
+        """
+        # Hapus Desa dalam batch
+        self.stdout.write('Menghapus data Desa...')
+        desa_count = 0
+        while True:
+            batch = list(Desa.objects.all()[:batch_size])
+            if not batch:
+                break
+            Desa.objects.filter(id__in=[obj.id for obj in batch]).delete()
+            desa_count += len(batch)
+            progress(desa_count, desa_count + batch_size, suffix=f"Desa ({desa_count})")
+        
+        # Hapus Kecamatan dalam batch
+        self.stdout.write('\nMenghapus data Kecamatan...')
+        kecamatan_count = 0
+        while True:
+            batch = list(Kecamatan.objects.all()[:batch_size])
+            if not batch:
+                break
+            Kecamatan.objects.filter(id__in=[obj.id for obj in batch]).delete()
+            kecamatan_count += len(batch)
+            progress(kecamatan_count, kecamatan_count + batch_size, suffix=f"Kecamatan ({kecamatan_count})")
+        
+        # Hapus Kabupaten dalam batch
+        self.stdout.write('\nMenghapus data Kabupaten...')
+        kabupaten_count = 0
+        while True:
+            batch = list(Kabupaten.objects.all()[:batch_size])
+            if not batch:
+                break
+            Kabupaten.objects.filter(id__in=[obj.id for obj in batch]).delete()
+            kabupaten_count += len(batch)
+            progress(kabupaten_count, kabupaten_count + batch_size, suffix=f"Kabupaten ({kabupaten_count})")
+        
+        # Hapus Provinsi dalam batch
+        self.stdout.write('\nMenghapus data Provinsi...')
+        provinsi_count = 0
+        while True:
+            batch = list(Provinsi.objects.all()[:batch_size])
+            if not batch:
+                break
+            Provinsi.objects.filter(id__in=[obj.id for obj in batch]).delete()
+            provinsi_count += len(batch)
+            progress(provinsi_count, provinsi_count + batch_size, suffix=f"Provinsi ({provinsi_count})")
+        
+        print()  # New line setelah progress bar
+        self.stdout.write(self.style.SUCCESS("Sukses hapus semua data wilayah"))

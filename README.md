@@ -53,32 +53,56 @@ Setelah berhasil lakukan
     path('select2/', include('django_select2.urls'))
     ```
 
+## ⚠️ PENTING: Upgrade ke Versi Baru
+
+Jika Anda melakukan **upgrade dari versi lama** dan data wilayah sudah ada di database, harap ikuti panduan migrasi untuk menghindari kehilangan data!
+
+**Panduan Lengkap:** Lihat [MIGRASI_QUICKSTART.md](MIGRASI_QUICKSTART.md) atau [MIGRASI_DATA.md](MIGRASI_DATA.md)
+
+### Quick Guide Migrasi:
+
+**Jika model Anda menggunakan `on_delete=SET_NULL`:**
+```bash
+# 1. Import data baru TANPA --clear (data lama tetap ada)
+python manage.py import_base_csv
+
+# 2. Migrasi relasi (matching dari CSV lama ke database baru)
+python manage.py migrate_wilayah_relations --auto-discover
+
+# 3. Cleanup data lama (opsional)
+python manage.py cleanup_old_wilayah
+```
+
+**Catatan:** Pastikan file CSV lama (`provinces.csv`, `regencies.csv`, `districts.csv`, `villages.csv`) tersedia di `wilayah_indonesia/csv/` untuk proses migrasi.
+
+---
+
 ## Seeding Data Wilayah
+### Import dari File Tunggal (base.csv)
 
-Jalankan perintah berikut untuk melakukan seeding data wilayah ke database:
-
-```bash
-./manage.py region_seeding
-```
-Atau jika hanya ingin menjalankan seeder wilayah:
-```bash
-./manage.py region_seeding --provinsi
-```
-```bash
-./manage.py region_seeding --kabupaten
-```
-```bash
-./manage.py region_seeding --kecamatan
-```
-```bash
-./manage.py region_seeding --desa
-```
-
-Untuk menghapus data gunakan command ini
+Alternatif, Anda dapat menggunakan command `import_base_csv` untuk import data dari satu file CSV dengan format: `ID,Nama`
 
 ```bash
-./manage.py region_seeding --delete
+# Import data baru
+python manage.py import_base_csv
+
+# Atau import dengan menghapus data lama (hati-hati jika ada on_delete=SET_NULL)
+python manage.py import_base_csv --clear
 ```
+
+**Format CSV:**
+```csv
+11,ACEH
+1101,KAB. ACEH SELATAN
+110101,Bakongan
+1101012001,Keude Bakongan
+```
+
+Kategori berdasarkan panjang ID:
+- **2 digit** → Provinsi
+- **4 digit** → Kabupaten
+- **6 digit** → Kecamatan  
+- **10+ digit** → Desa
 
 ## Model
 Contoh kode:
